@@ -1,4 +1,6 @@
 #include "tile.h"
+#include <assert.h>
+#include <stdlib.h>
 
 bool tile_calculate_alive(Tile *tile, unsigned int neighbors_alive) {
     if (neighbors_alive < 2) {
@@ -13,24 +15,29 @@ bool tile_calculate_alive(Tile *tile, unsigned int neighbors_alive) {
     if (neighbors_alive > 3) {
         return false;
     }
+    return false;
 }
 
-Tile **tile_universe_init(unsigned int width, unsigned int height) {
-    Tile **universe = malloc(sizeof(Tile*) * width);
-    for (int x=0; x<width; x++) {
+Universe *tile_universe_init(unsigned int width, unsigned int height) {
+    Universe *universe = malloc(sizeof(Universe));
+    universe->tiles = malloc(sizeof(Tile*) * width);
+    universe->width = width;
+    universe->height = height;
+
+    for (unsigned int x=0; x<width; x++) {
         Tile *col = malloc(sizeof(Tile) * width);
-        for (int y=0; y<height; y++) {
+        for (unsigned int y=0; y<height; y++) {
             col[y] = (Tile){ .alive = false };
         }
-        universe[x] = col;
+        universe->tiles[x] = col;
     }
     return universe;
 }
 
-void tile_universe_deinit(Tile **universe) {
-    unsigned int width = sizeof(universe) / sizeof(universe[0]);
-    for (int x=0; x<width; x++) {
-        free(universe[x]);
+void tile_universe_deinit(Universe *universe) {
+    for (unsigned int x=0; x<universe->width; x++) {
+        free(universe->tiles[x]);
     }
+    free(universe->tiles);
     free(universe);
 }

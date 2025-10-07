@@ -2,7 +2,6 @@
 #define tile_h
 
 #include <stdbool.h>
-#include <stdlib.h>
 
 typedef struct Tile
 {
@@ -10,10 +9,16 @@ typedef struct Tile
     bool next;
 } Tile;
 
+typedef struct Universe {
+    Tile **tiles;
+    unsigned int width;
+    unsigned int height;
+} Universe;
+
 bool tile_calculate_alive(Tile *tile, unsigned int neighbors_alive);
 
-Tile **tile_universe_init(unsigned int width, unsigned int height);
+Universe *tile_universe_init(unsigned int width, unsigned int height);
 
-void tile_universe_deinit(Tile **universe);
+void tile_universe_deinit(Universe *universe);
 
 #endif

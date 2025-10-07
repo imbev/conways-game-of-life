@@ -23,17 +23,17 @@ int main(void)
     SDL_Event e;
     bool running = true;
 
-    Tile **universe = tile_universe_init(width, height);
+    Universe *universe = tile_universe_init(width, height);
 
     srand(time(NULL));
     
-    universe[10][10].alive = true;
-    universe[11][10].alive = true;
-    universe[14][10].alive = true;
-    universe[15][10].alive = true;
-    universe[16][10].alive = true;
-    universe[11][8].alive = true;
-    universe[13][9].alive = true;
+    universe->tiles[10][10].alive = true;
+    universe->tiles[11][10].alive = true;
+    universe->tiles[14][10].alive = true;
+    universe->tiles[15][10].alive = true;
+    universe->tiles[16][10].alive = true;
+    universe->tiles[11][8].alive = true;
+    universe->tiles[13][9].alive = true;
 
     Uint64 interval = 250;
     Uint64 next_time = SDL_GetTicks() + interval;
@@ -62,30 +62,30 @@ int main(void)
             {
                 unsigned int neighbors_alive = 0;
                 if (x != 0 && y != height-1) {
-                    neighbors_alive += universe[x-1][y+1].alive;
+                    neighbors_alive += universe->tiles[x-1][y+1].alive;
                 }
                 if (y != height-1) {
-                    neighbors_alive += universe[x][y+1].alive;
+                    neighbors_alive += universe->tiles[x][y+1].alive;
                 }
                 if (x != width-1 && y != height-1) {
-                    neighbors_alive += universe[x+1][y+1].alive;
+                    neighbors_alive += universe->tiles[x+1][y+1].alive;
                 }
                 if (x != 0) {
-                    neighbors_alive += universe[x-1][y].alive;
+                    neighbors_alive += universe->tiles[x-1][y].alive;
                 }
                 if (x != width-1) {
-                    neighbors_alive += universe[x+1][y].alive;
+                    neighbors_alive += universe->tiles[x+1][y].alive;
                 }
                 if (x != 0 && y != 0) {
-                    neighbors_alive += universe[x-1][y-1].alive;
+                    neighbors_alive += universe->tiles[x-1][y-1].alive;
                 }
                 if (y != 0) {
-                    neighbors_alive += universe[x][y-1].alive;
+                    neighbors_alive += universe->tiles[x][y-1].alive;
                 }
                 if (x != width-1 && y != 0) {
-                    neighbors_alive += universe[x+1][y-1].alive;
+                    neighbors_alive += universe->tiles[x+1][y-1].alive;
                 }
-                universe[x][y].next = tile_calculate_alive(&universe[x][y], neighbors_alive);
+                universe->tiles[x][y].next = tile_calculate_alive(&universe->tiles[x][y], neighbors_alive);
             }
         }
 
@@ -98,8 +98,8 @@ int main(void)
         {
             for (int y = 0; y < height; y++)
             {
-                universe[x][y].alive = universe[x][y].next;
-                if (!universe[x][y].alive) {
+                universe->tiles[x][y].alive = universe->tiles[x][y].next;
+                if (!universe->tiles[x][y].alive) {
                     continue;
                 }
                 SDL_FRect rect = { .w = size, .h = size, .x = x * size, .y = y * size };
